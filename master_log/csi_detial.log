@@ -1,0 +1,100 @@
+Defaulted container "datenlord" out of: datenlord, csi-node-driver-registrar, wait-for-etcd-service (init)
+set -e # exit on error
++ set -e
+set -u # unset var as error
++ set -u
+
+if [ $# -le 0 ]
+then
+    echo "Plase input mount directory\nthe usage: $0 <MOUNT DIR>"
+    exit 1
+fi
++ [ 1 -le 0 ]
+
+FUSECTL_DIR=/sys/fs/fuse/connections
++ FUSECTL_DIR=/sys/fs/fuse/connections
+
+FUSE_DIR=$1
++ FUSE_DIR=/var/opt/datenlord-data
+FUSE_MINOR=$(cat /proc/self/mountinfo | grep fuse | grep $FUSE_DIR | awk '{print $3}' | cut -d ':' -f 2)
++ cat /proc/self/mountinfo
++ grep fuse
++ grep /var/opt/datenlord-data
++ awk {print $3}
++ cut -d : -f 2
++ FUSE_MINOR=
+MOUNTED=$(cat /proc/self/mountinfo | grep fuse | grep $FUSE_DIR | awk '{print $5}')
++ cat /proc/self/mountinfo
++ grep fuse
++ grep /var/opt/datenlord-data
++ awk {print $5}
++ MOUNTED=
+if [ -z $MOUNTED ]
+then
+    echo "$FUSE_DIR NOT MOUNTED"
+else
+    umount $FUSE_DIR || echo "UMOUNT FAILED"
+fi
++ [ -z ]
++ echo /var/opt/datenlord-data NOT MOUNTED
+
+STILL_MOUNTED=$(ls /sys/fs/fuse/connections | grep $FUSE_MINOR | awk '{print $1}')
+/var/opt/datenlord-data NOT MOUNTED
++ ls /sys/fs/fuse/connections
++ grep
++ awk {print $1}
+Usage: grep [OPTION]... PATTERNS [FILE]...
+Try 'grep --help' for more information.
++ STILL_MOUNTED=
+if [ -z $STILL_MOUNTED ]
+then
+    echo "$FUSE_DIR GOT UN-MOUNTED"
+else
+    FUSE_CTL_MOUNTED=$(cat /proc/self/mountinfo | grep $FUSECTL_DIR | awk '{print $5}')
+    if [ $FUSE_CTL_MOUNTED ]
+/var/opt/datenlord-data GOT UN-MOUNTED
+    then
+        echo "FUSECTL IS MOUNTED"
+    else
+        echo "MOUNT FUSECTL"
+        mount -t fusectl fusectl $FUSECTL_DIR
+    fi
+    echo "UMOUNT FUSE DIR=$FUSE_DIR MINOR=$FUSE_MINOR" | tee /sys/fs/fuse/connections/$FUSE_MINOR/abort || (echo "FUSECTL UMOUNT FAILED" && /bin/false)
+fi
++ [ -z ]
++ echo /var/opt/datenlord-data GOT UN-MOUNTED
+[2023-07-31T12:17:38Z INFO  datenlord::csi] gRPC server listening on unix:///plugin/node.sock:1
+[2023-07-31T12:17:38Z INFO  datenlord::csi] gRPC server listening on 10.244.3.4:50051
+[2023-07-31T12:17:38Z WARN  datenlord::async_fuse::fuse::fuse_request] request bytes is not completely consumed: bytes.len() = 104, header = FuseInHeader { len: 104, opcode: 26, unique: 2, nodeid: 0, uid: 0, gid: 0, pid: 0, padding: 0 }, de.remaining_len() = 48, de = Deserializer { bytes: [3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
+[2023-07-31T12:20:26Z INFO  datenlord::csi::worker] created volume ID=07fc33d2-033d-4846-be42-37d9bde2f36a and name=datenlord-pv-049227ce-c20a-4c9b-aec0-c33e4213b1e3 on node ID="kind-worker"
+[2023-07-31T12:20:26Z INFO  datenlord::csi::meta_data] adding the meta data of volume ID=07fc33d2-033d-4846-be42-37d9bde2f36a
+[2023-07-31T12:20:52Z INFO  datenlord::csi::worker] created volume ID=13916c60-8268-4189-8ddf-6e92ed260d8a and name=datenlord-pv-389ee42c-fbae-4d64-903f-8eedbd074004 on node ID="kind-worker"
+[2023-07-31T12:20:52Z INFO  datenlord::csi::meta_data] adding the meta data of volume ID=13916c60-8268-4189-8ddf-6e92ed260d8a
+[2023-07-31T12:20:52Z INFO  datenlord::csi::worker] created volume ID=9d7e9aed-4cde-4171-9439-292232404811 and name=datenlord-pv-4bef2368-99fb-40fa-bab2-032b9880b562 on node ID="kind-worker"
+[2023-07-31T12:20:52Z INFO  datenlord::csi::meta_data] adding the meta data of volume ID=9d7e9aed-4cde-4171-9439-292232404811
+[2023-07-31T12:20:52Z INFO  datenlord::csi::worker] created volume ID=0bcf21f1-1ef3-48dc-845c-52fe9fcd0194 and name=datenlord-pv-90f42ecc-4528-460e-9cfd-9b20e26e0d2c on node ID="kind-worker"
+[2023-07-31T12:20:52Z INFO  datenlord::csi::meta_data] adding the meta data of volume ID=0bcf21f1-1ef3-48dc-845c-52fe9fcd0194
+[2023-07-31T12:21:12Z INFO  datenlord::csi::meta_data] deleting volume ID=9d7e9aed-4cde-4171-9439-292232404811 on node ID=kind-worker
+[2023-07-31T12:21:12Z INFO  datenlord::csi::meta_data] deleting volume ID=0bcf21f1-1ef3-48dc-845c-52fe9fcd0194 on node ID=kind-worker
+[2023-07-31T12:21:12Z INFO  datenlord::csi::meta_data] deleting volume ID=13916c60-8268-4189-8ddf-6e92ed260d8a on node ID=kind-worker
+[2023-07-31T12:21:12Z WARN  datenlord::async_fuse::fuse::fuse_request] request bytes is not completely consumed: bytes.len() = 80, header = FuseInHeader { len: 80, opcode: 28, unique: 24, nodeid: 20005, uid: 0, gid: 0, pid: 155, padding: 0 }, de.remaining_len() = 16, de = Deserializer { bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 3, 0, 0, 0, 0, 0] }
+[2023-07-31T12:21:12Z WARN  datenlord::async_fuse::fuse::fuse_request] request bytes is not completely consumed: bytes.len() = 80, header = FuseInHeader { len: 80, opcode: 28, unique: 26, nodeid: 20004, uid: 0, gid: 0, pid: 156, padding: 0 }, de.remaining_len() = 16, de = Deserializer { bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 3, 0, 0, 0, 0, 0] }
+[2023-07-31T12:21:12Z WARN  datenlord::async_fuse::fuse::fuse_request] request bytes is not completely consumed: bytes.len() = 80, header = FuseInHeader { len: 80, opcode: 28, unique: 40, nodeid: 20003, uid: 0, gid: 0, pid: 155, padding: 0 }, de.remaining_len() = 16, de = Deserializer { bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 3, 0, 0, 0, 0, 0] }
+[2023-07-31T12:21:12Z INFO  datenlord::csi::meta_data] deleting volume ID=07fc33d2-033d-4846-be42-37d9bde2f36a on node ID=kind-worker
+[2023-07-31T12:21:12Z WARN  datenlord::async_fuse::fuse::fuse_request] request bytes is not completely consumed: bytes.len() = 80, header = FuseInHeader { len: 80, opcode: 28, unique: 52, nodeid: 20002, uid: 0, gid: 0, pid: 153, padding: 0 }, de.remaining_len() = 16, de = Deserializer { bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 3, 0, 0, 0, 0, 0] }
+[2023-07-31T12:21:12Z WARN  datenlord::async_fuse::fuse::fuse_request] request bytes is not completely consumed: bytes.len() = 80, header = FuseInHeader { len: 80, opcode: 28, unique: 60, nodeid: 20002, uid: 0, gid: 0, pid: 153, padding: 0 }, de.remaining_len() = 16, de = Deserializer { bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 3, 0, 0, 0, 0, 0] }
+[2023-07-31T12:21:13Z INFO  datenlord::csi::worker] created volume ID=465194c6-01a4-45f5-b5a2-a3d0e6547b3a and name=datenlord-pv-f11362d0-cfed-4433-aa68-51072a3d6e80 on node ID="kind-worker"
+[2023-07-31T12:21:13Z INFO  datenlord::csi::meta_data] adding the meta data of volume ID=465194c6-01a4-45f5-b5a2-a3d0e6547b3a
+[2023-07-31T12:21:38Z WARN  datenlord::async_fuse::fuse::fuse_request] request bytes is not completely consumed: bytes.len() = 80, header = FuseInHeader { len: 80, opcode: 28, unique: 82, nodeid: 20006, uid: 0, gid: 0, pid: 165, padding: 0 }, de.remaining_len() = 16, de = Deserializer { bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 136, 1, 0, 0, 0, 0, 0] }
+[2023-07-31T12:21:38Z WARN  datenlord::async_fuse::fuse::fuse_request] request bytes is not completely consumed: bytes.len() = 80, header = FuseInHeader { len: 80, opcode: 28, unique: 84, nodeid: 20006, uid: 0, gid: 0, pid: 165, padding: 0 }, de.remaining_len() = 16, de = Deserializer { bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 136, 1, 0, 0, 0, 0, 0] }
+[2023-07-31T12:21:38Z WARN  datenlord::async_fuse::fuse::fuse_request] request bytes is not completely consumed: bytes.len() = 56, header = FuseInHeader { len: 56, opcode: 3, unique: 88, nodeid: 20006, uid: 0, gid: 0, pid: 165, padding: 0 }, de.remaining_len() = 16, de = Deserializer { bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }
+[2023-07-31T12:21:38Z INFO  datenlord::async_fuse::memfs::dist::request] dist invalidate
+[2023-07-31T12:21:38Z WARN  datenlord::async_fuse::fuse::fuse_request] request bytes is not completely consumed: bytes.len() = 80, header = FuseInHeader { len: 80, opcode: 15, unique: 96, nodeid: 4, uid: 0, gid: 0, pid: 165, padding: 0 }, de.remaining_len() = 16, de = Deserializer { bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 0, 0, 0, 0, 0, 0] }
+[2023-07-31T12:21:38Z INFO  datenlord::async_fuse::memfs::dist::request] dist invalidate
+[2023-07-31T12:21:38Z INFO  datenlord::async_fuse::memfs::dist::request] dist invalidate
+[2023-07-31T12:21:38Z INFO  datenlord::csi::meta_data] adding the meta data of snapshot ID=0b81f3e5-3643-4cbf-a528-9e9532203edd
+[2023-07-31T12:21:38Z INFO  datenlord::csi::worker] create snapshot ID=0b81f3e5-3643-4cbf-a528-9e9532203edd and name=datenlord-snapshot-37811a5d-aace-4d7c-957e-726b41ef64cf on node ID=kind-worker
+[2023-07-31T12:21:52Z INFO  datenlord::csi::meta_data] deleting volume ID=465194c6-01a4-45f5-b5a2-a3d0e6547b3a on node ID=kind-worker
+[2023-07-31T12:21:52Z INFO  datenlord::csi::meta_data] deleting the meta data of snapshot ID=0b81f3e5-3643-4cbf-a528-9e9532203edd
+[2023-07-31T12:21:52Z WARN  datenlord::async_fuse::fuse::fuse_request] request bytes is not completely consumed: bytes.len() = 80, header = FuseInHeader { len: 80, opcode: 28, unique: 114, nodeid: 20006, uid: 0, gid: 0, pid: 156, padding: 0 }, de.remaining_len() = 16, de = Deserializer { bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 3, 0, 0, 0, 0, 0] }
+[2023-07-31T12:21:52Z WARN  datenlord::async_fuse::fuse::fuse_request] request bytes is not completely consumed: bytes.len() = 80, header = FuseInHeader { len: 80, opcode: 28, unique: 120, nodeid: 20006, uid: 0, gid: 0, pid: 156, padding: 0 }, de.remaining_len() = 16, de = Deserializer { bytes: [0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 3, 0, 0, 0, 0, 0] }

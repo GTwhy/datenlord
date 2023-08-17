@@ -176,6 +176,7 @@ impl<S: S3BackEnd + Sync + Send + 'static> MetaData for S3MetaData<S> {
             );
         });
         let o_flags = fs_util::parse_oflag(flags);
+        // Q: 如何保证一致性， 本地计数有何用？
         let result = node.dup_fd(o_flags).await;
         self.set_node_to_kv_engine(ino, node).await;
         result
@@ -285,6 +286,7 @@ impl<S: S3BackEnd + Sync + Send + 'static> MetaData for S3MetaData<S> {
         //         flags,
         //     ))
         // } else {
+        // Q: 如何保证一致性， 本地计数有何用？
         let result = node.dup_fd(o_flags).await;
         self.set_node_to_kv_engine(ino, node).await;
         result

@@ -69,6 +69,7 @@ pub async fn start_async_fuse(
             let ss = session::new_session_of_memfs(mount_point, fs, fs_controller).await?;
             ss.run().await?;
         }
+        // Q: what does None mean?
         VolumeType::None => {
             let (fs, fs_controller): (
                 memfs::MemFs<memfs::S3MetaData<DoNothingImpl>>,
